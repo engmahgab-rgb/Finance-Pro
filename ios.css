@@ -1,0 +1,18 @@
+/* iPhone-specific progressive enhancement and safe-area handling. */
+:root { color-scheme: light dark; }
+button { touch-action: manipulation; }
+aside { height: 100dvh; }
+.install-tip { padding: 12px 14px; margin: 0 0 22px; background: #e6f4ed; border: 1px solid #b5ddc8; border-radius: 12px; display: flex; align-items: center; gap: 10px; color: #145c42; }
+.install-tip > span { font-size: 22px; }
+.install-tip p { margin: 0; flex: 1; font-size: 13px; }
+.install-tip p small { display: block; color: #31755a; margin-top: 2px; }
+.install-tip em { font-style: normal; font-weight: 700; }
+.install-tip button { align-self: start; background: transparent; color: #31755a; font-size: 19px; padding: 0 3px; }
+@media (max-width: 600px) {
+  main { padding: calc(18px + env(safe-area-inset-top)) 16px calc(76px + env(safe-area-inset-bottom)); margin: 0; }
+  aside { height: calc(60px + env(safe-area-inset-bottom)); padding: 5px 5px env(safe-area-inset-bottom); }
+  nav a { padding: 11px 12px; min-width: 44px; min-height: 44px; justify-content: center; align-items: center; }
+  .primary, .secondary { min-height: 44px; }
+  .modal { padding: 20px; }
+  .modal input, .modal select { min-height: 44px; font-size: 16px; }
+}
