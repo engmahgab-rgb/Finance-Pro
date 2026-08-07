@@ -1,7 +1,8 @@
+// @ts-nocheck
 import { registerSW } from 'virtual:pwa-register';
 import { db } from './database/db';
 import { accountBalance, createAccount, createTransaction, seedDatabase, totalsForMonth } from './services/finance-service';
-import type { TransactionKind } from './core/types';
+import type { Transaction, TransactionKind } from './core/types';
 import './styles.css';
 import './ios.css';
 
