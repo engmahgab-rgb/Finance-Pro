@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { db } from '../database/db';
-import type { Account, Budget, Category, Transaction, TransactionKind } from '../core/types';
+import type { Account, Budget, Category, Recurring, Transaction, TransactionKind } from '../core/types';
 
 const today = () => new Date().toISOString().slice(0, 10);
 /** Seeds a useful first-run workspace without overwriting user data. */
@@ -15,11 +15,13 @@ export async function ensurePaymentAccounts(): Promise<void> {
   const accounts = await db.accounts.toArray();
   const additions: Account[] = [];
   if (!accounts.some(account => account.type === 'cash')) additions.push({ id: uuid(), name: 'Cash', type: 'cash', openingBalance: 0, color: '#d88935', createdAt: today() });
+  if (!accounts.some(account => account.type === 'debit')) additions.push({ id: uuid(), name: 'Debit card', type: 'debit', openingBalance: 0, color: '#2674a8', createdAt: today() });
   if (!accounts.some(account => account.type === 'credit')) additions.push({ id: uuid(), name: 'Credit card', type: 'credit', openingBalance: 0, color: '#6657c5', createdAt: today() });
   if (additions.length) await db.accounts.bulkAdd(additions);
 }
 export async function createTransaction(input: Omit<Transaction, 'id' | 'createdAt'>): Promise<void> { await db.transactions.add({ ...input, id: uuid(), createdAt: new Date().toISOString() }); }
 export async function createAccount(input: Omit<Account, 'id' | 'createdAt'>): Promise<void> { await db.accounts.add({ ...input, id: uuid(), createdAt: new Date().toISOString() }); }
+export async function createRecurring(input: Omit<Recurring, 'id'>): Promise<void> { await db.recurring.add({ ...input, id: uuid() }); }
 export async function totalsForMonth(month: string): Promise<{ income: number; expenses: number }> { const txs = await db.transactions.where('date').between(`${month}-01`, `${month}-31`, true, true).toArray(); return txs.reduce((total, tx) => ({ income: total.income + (tx.kind === 'income' ? tx.amount : 0), expenses: total.expenses + (tx.kind === 'expense' ? tx.amount : 0) }), { income: 0, expenses: 0 }); }
 export async function accountBalance(account: Account): Promise<number> { const txs = await db.transactions.where('accountId').equals(account.id).toArray(); const direction = account.type === 'credit' ? -1 : 1; return txs.reduce((value, tx) => value + (tx.kind === 'income' ? tx.amount * direction : -tx.amount * direction), account.openingBalance); }
 export async function saveBudget(input: Omit<Budget, 'id'>): Promise<void> { await db.budgets.put({ ...input, id: uuid() }); }
