@@ -26,4 +26,11 @@ function openAccount(): void { const dialog = document.querySelector<HTMLDialogE
 async function exportData(): Promise<void> { const snapshot = Object.fromEntries(await Promise.all(['accounts','transactions','categories','budgets','recurring','goals','plannedTransactions','settings','notifications','attachments'].map(async name => [name, await (db as unknown as Record<string, {toArray: () => Promise<unknown[]>}>)[name].toArray()]))); const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' }); const anchor = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: `finance-pro-${month}.json` }); anchor.click(); URL.revokeObjectURL(anchor.href); }
 async function importData(e: Event): Promise<void> { const file = (e.target as HTMLInputElement).files?.[0]; if (!file || !confirm('Replace local data with this backup?')) return; const data = JSON.parse(await file.text()) as Record<string, unknown[]>; await db.transaction('rw', ...db.tables, async () => { for (const table of db.tables) { await table.clear(); const values = data[table.name]; if (values?.length) await table.bulkAdd(values); } }); route(); }
 async function route(): Promise<void> { const page = location.hash.slice(1) || 'dashboard'; if (page === 'dashboard') await dashboard(); else if (page === 'accounts') await accounts(); else if (page === 'transactions') await transactions(); else await simplePage(page in labels ? page : 'dashboard'); }
-window.addEventListener('hashchange', route); await seedDatabase(); await route();
+window.addEventListener('hashchange', route);
+
+async function startApp(): Promise<void> {
+    await seedDatabase();
+    await route();
+}
+
+startApp();
