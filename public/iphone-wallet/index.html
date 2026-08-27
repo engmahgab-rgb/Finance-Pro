@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- إعدادات شورتكت وسطح المكتب والأيقونة المالية -->
+    <title>إدارة المالية الشخصية</title>
+    <meta name="theme-color" content="#1e293b">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="محفظتي المالية">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="manifest" href="manifest.webmanifest">
+    
+    <!-- أيقونة تطبيق إدارة مالية (3D Finance Icon) -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2845/2845899.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2845/2845899.png">
+
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Google Identity Services Library -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --accent-purple: #7c3aed;
+            --accent-orange: #d97706;
+            --accent-green: #059669;
+            --accent-red: #dc2626;
+            --accent-blue: #0284c7;
+        }
+
+        body {
+            font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            padding-bottom: 90px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* App Header */
+        .app-header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #fff;
+            padding: 16px 20px 24px 20px;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: -15px;
+        }
+
+        .app-header h5 {
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .app-header .subtitle {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .app-logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        /* Drive Sync & Shortcut Bar */
+        .sync-bar {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin: 15px 15px 0 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* Stat Cards Carousel / Grid */
+        .stats-wrapper {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 15px 15px 15px 15px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .stats-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .stat-card-mobile {
+            min-width: 140px;
+            flex: 1;
+            scroll-snap-align: start;
+            border-radius: 18px;
+            padding: 14px;
+            color: white;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card-mobile i {
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+            font-size: 2.2rem;
+            opacity: 0.15;
+        }
+
+        .stat-card-mobile h6 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            opacity: 0.9;
+        }
+
+        .stat-card-mobile h4 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .bg-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .bg-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .bg-orange { background: linear-gradient(135deg, #f59e0b, #b45309); }
+        .bg-green { background: linear-gradient(135deg, #10b981, #047857); }
+
+        /* Main Content Container */
+        .content-container {
+            padding: 0 15px;
+        }
+
+        .card-custom {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .card-custom .card-header-custom {
+            padding: 16px 18px;
+            background: #ffffff;
+            border-bottom: 1px solid #f1f5f9;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-custom .card-body {
+            padding: 16px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+            border: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #fff;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-app {
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+
+        .btn-app:active {
+            transform: scale(0.98);
+        }
+
+        .data-card-item {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .data-card-item .item-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+
+        .data-card-item .item-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .data-card-item .item-amount {
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+
+        .data-card-item .btn-delete {
+            color: #ef4444;
+            background: #fee2e2;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            margin-right: 10px;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 5px 12px 5px;
+            z-index: 1050;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        .nav-item-mobile {
+            flex: 1;
+            text-align: center;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 4px 0;
+            border: none;
+            background: none;
+        }
+
+        .nav-item-mobile i {
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+
+        .nav-item-mobile.active {
+            color: var(--primary-color);
+        }
+
+        .nav-item-mobile.active i {
+            transform: translateY(-2px);
+        }
+
+        .fab-btn {
+            position: fixed;
+            bottom: 75px;
+            left: 20px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+            z-index: 1040;
+            border: none;
+        }
+
+        .report-box {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .badge-status {
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="app-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <!-- صورة الإدارة المالية للتطبيق -->
+                <img src="https://cdn-icons-png.flaticon.com/512/2845/2845899.png" alt="Logo" class="app-logo-img">
+                <div>
+                    <h5>محفظتي المالية</h5>
+                    <div class="subtitle">إدارة ومتابعة المصاريف بسهولة</div>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <!-- زر إضافة شورتكت للتطبيق على سطح المكتب -->
+                <button id="btn-install-shortcut" class="btn btn-sm btn-warning text-dark fw-bold rounded-pill px-2 fs-7" onclick="installAppShortcut()" style="display: none;">
+                    <i class="fa-solid fa-mobile-screen-button me-1"></i> تثبيت
+                </button>
+                <button class="btn btn-sm btn-outline-light rounded-circle" onclick="openGoogleSettings()" title="إعدادات Google Drive">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-light rounded-circle" onclick="renderAll()" title="تحديث">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Drive Sync Status Bar -->
+    <div class="sync-bar">
+        <div class="d-flex align-items-center gap-2">
+            <i class="fa-brands fa-google-drive text-success fs-5"></i>
+            <span id="sync-status-text" class="fs-7 fw-bold text-muted">غير مرتبط بـ Google Drive</span>
+        </div>
+        <button id="btn-auth-drive" class="btn btn-sm btn-outline-primary rounded-pill px-3 fs-7" onclick="handleAuthClick()">
+            <i class="fa-solid fa-sync me-1"></i> ربط الحساب
+        </button>
+    </div>
+
+    <!-- Horizontal Scroll Stats -->
+    <div class="stats-wrapper">
+        <div class="stat-card-mobile bg-blue">
+            <h6>إجمالي البنوك</h6>
+            <h4 id="total-bank-balance">0 ر.س</h4>
+            <i class="fa-solid fa-building-columns"></i>
+        </div>
+        <div class="stat-card-mobile bg-purple">
+            <h6>مستغل البطاقات</h6>
+            <h4 id="total-credit-used">0 ر.س</h4>
+            <i class="fa-solid fa-credit-card"></i>
+        </div>
+        <div class="stat-card-mobile bg-orange">
+            <h6>التزامات ثابتة</h6>
+            <h4 id="total-fixed-expenses">0 ر.س</h4>
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+        </div>
+        <div class="stat-card-mobile bg-green">
+            <h6>صافي السيولة</h6>
+            <h4 id="net-balance">0 ر.س</h4>
+            <i class="fa-solid fa-coins"></i>
+        </div>
+    </div>
+
+    <!-- Main Content Tabs Container -->
+    <div class="content-container mt-2">
+
+        <!-- TAB 1: المصاريف اليومية -->
+        <div id="tab-daily" class="app-tab-content">
+            <div class="card-custom">
+                <div class="card-header-custom text-danger">
+                    <span><i class="fa-solid fa-cart-shopping me-2"></i> المصروفات اليومية</span>
+                    <span class="badge bg-danger-subtle text-danger" id="daily-count-badge">0 مصروف</span>
+                </div>
+                <div class="card-body">
+                    <form id="daily-form" class="row g-2 mb-3">
+                        <div class="col-12">
+                            <input type="text" id="daily-item" class="form-control" placeholder="اسم المصروف (مثال: غداء، بنزين)" required>
+                        </div>
+                        <div class="col-6">
+                            <input type="number" id="daily-amount" class="form-control" placeholder="المبلغ (ر.س)" step="0.01" required>
+                        </div>
+                        <div class="col-6">
+                            <input type="date" id="daily-date" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <select id="daily-source" class="form-select" required>
+                                <option value="كاش / نقدي">كاش / نقدي</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <button type="submit" class="btn btn-danger btn-app w-100"><i class="fa-solid fa-plus ms-1"></i> إضافة المصروف</button>
+                        </div>
+                    </form>
+
+                    <hr class="my-3 text-muted">
+
+                    <div id="daily-list-mobile"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: البنوك والبطاقات -->
+        <div id="tab-accounts" class="app-tab-content" style="display: none;">
+            <div class="card-custom">
+                <div class="card-header-custom text-primary">
+                    <span><i class="fa-solid fa-building-columns me-2"></i> الحسابات البنكية</span>
+                </div>
+                <div class="card-body">
+                    <form id="bank-form" class="row g-2 mb-3">
+                        <div class="col-12">
+                            <select id="bank-name" class="form-select" required>
+                                <option value="" selected disabled>اختر البنك...</option>
+                                <option value="البنك الأهلي السعودي">البنك الأهلي السعودي</option>
+                                <option value="مصرف الراجحي">مصرف الراجحي</option>
+                                <option value="بنك الرياض">بنك الرياض</option>
+                                <option value="البنك السعودي الأول (SAB)">البنك السعودي الأول (SAB)</option>
+                                <option value="مصرف الإنماء">مصرف الإنماء</option>
+                                <option value="البنك العربي الوطني">البنك العربي الوطني</option>
+                                <option value="بنك البلاد">بنك البلاد</option>
+                                <option value="بنك الجزيرة">بنك الجزيرة</option>
+                                <option value="stc pay / stc bank">stc pay / stc bank</option>
+                                <option value="محفظة إلكترونية / أخرى">محفظة إلكترونية / أخرى</option>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <input type="number" id="bank-balance" class="form-control" placeholder="الرصيد المتاح" step="0.01" required>
+                        </div>
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-primary btn-app w-100">إضافة</button>
+                        </div>
+                    </form>
+                    <div id="bank-list-mobile"></div>
+                </div>
+            </div>
+
+            <div class="card-custom">
+                <div class="card-header-custom text-purple" style="color: var(--accent-purple);">
+                    <span><i class="fa-solid fa-credit-card me-2"></i> البطاقات الائتمانية</span>
+                </div>
+                <div class="card-body">
+                    <form id="credit-card-form" class="row g-2 mb-3">
+                        <div class="col-12">
+                            <input type="text" id="credit-card-name" class="form-control" placeholder="اسم البطاقة (مثال: فيزياء الراجحي)" required>
+                        </div>
+                        <div class="col-6">
+                            <input type="number" id="credit-card-limit" class="form-control" placeholder="الحد الائتماني" step="0.01" required>
+                        </div>
+                        <div class="col-6">
+                            <input type="number" id="credit-card-used" class="form-control" placeholder="المستغل حالياً" step="0.01" value="0">
+                        </div>
+                        <div class="col-12 mt-2">
+                            <button type="submit" class="btn btn-dark btn-app w-100"><i class="fa-solid fa-plus ms-1"></i> إضافة بطاقة ائتمانية</button>
+                        </div>
+                    </form>
+                    <div id="credit-card-list-mobile"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: الالتزامات والديون -->
+        <div id="tab-fixed" class="app-tab-content" style="display: none;">
+            <div class="card-custom">
+                <div class="card-header-custom text-warning" style="color: var(--accent-orange);">
+                    <span><i class="fa-solid fa-file-invoice-dollar me-2"></i> الأقساط والفواتير الشهريّة</span>
+                </div>
+                <div class="card-body">
+                    <form id="fixed-form" class="row g-2 mb-3">
+                        <div class="col-12">
+                            <input type="text" id="fixed-title" class="form-control" placeholder="الوصف (مثال: قسط سيارة، إيجار)" required>
+                        </div>
+                        <div class="col-6">
+                            <input type="number" id="fixed-amount" class="form-control" placeholder="المبلغ" step="0.01" required>
+                        </div>
+                        <div class="col-6">
+                            <select id="fixed-source" class="form-select" required></select>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <button type="submit" class="btn btn-warning text-white btn-app w-100">إضافة التزام</button>
+                        </div>
+                    </form>
+                    <div id="fixed-list-mobile"></div>
+                </div>
+            </div>
+
+            <div class="card-custom">
+                <div class="card-header-custom text-info" style="color: var(--accent-blue);">
+                    <span><i class="fa-solid fa-hand-holding-dollar me-2"></i> سجل الديون (دائن / مدين)</span>
+                </div>
+                <div class="card-body">
+                    <form id="debt-form" class="row g-2 mb-3">
+                        <div class="col-6">
+                            <input type="text" id="debt-person" class="form-control" placeholder="الجهة / الشخص" required>
+                        </div>
+                        <div class="col-6">
+                            <select id="debt-type" class="form-select" required>
+                                <option value="مدين">مدين (لـك)</option>
+                                <option value="دائن">دائن (عليك)</option>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <input type="number" id="debt-amount" class="form-control" placeholder="المبلغ" step="0.01" required>
+                        </div>
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-info text-white btn-app w-100">إضافة</button>
+                        </div>
+                    </form>
+                    <div id="debt-list-mobile"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: التقرير والتقييم -->
+        <div id="tab-report" class="app-tab-content" style="display: none;">
+            <div class="card-custom">
+                <div class="card-header-custom text-success" style="color: var(--accent-green);">
+                    <span><i class="fa-solid fa-chart-line me-2"></i> التقرير والتقييم المالي</span>
+                </div>
+                <div class="card-body">
+                    <div class="report-box mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted fs-7">إجمالي السيولة والأصول:</span>
+                            <span id="rep-assets" class="fw-bold text-primary">0 ر.س</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted fs-7">إجمالي الالتزامات المستحقة:</span>
+                            <span id="rep-liabilities" class="fw-bold text-warning">0 ر.س</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted fs-7">المصروفات اليومية:</span>
+                            <span id="rep-daily" class="fw-bold text-danger">0 ر.س</span>
+                        </div>
+                        <hr class="my-2">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold">إجمالي الخرج والاستهلاك:</span>
+                            <span id="rep-total-spent" class="fw-bold text-dark">0 ر.س</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center p-3 border rounded-3 bg-light mb-3">
+                        <div class="mb-2 text-muted fs-7">التقييم المالي العام</div>
+                        <span id="eval-badge" class="badge-status bg-secondary text-white">غير محدد</span>
+                        <p id="eval-text" class="text-muted fs-7 mt-3 mb-0">اضغط على زر التحديث للحصول على تحليل لحالتك المالية.</p>
+                    </div>
+
+                    <button class="btn btn-success btn-app w-100" onclick="calculateReport()">
+                        <i class="fa-solid fa-arrows-rotate me-1"></i> تحديث التقرير والتقييم الآن
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Quick Floating Button -->
+    <button class="fab-btn" onclick="switchTab('daily')" title="إضافة مصروف سريع">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <button class="nav-item-mobile active" id="nav-daily" onclick="switchTab('daily')">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>المصاريف</span>
+        </button>
+        <button class="nav-item-mobile" id="nav-accounts" onclick="switchTab('accounts')">
+            <i class="fa-solid fa-credit-card"></i>
+            <span>الحسابات</span>
+        </button>
+        <button class="nav-item-mobile" id="nav-fixed" onclick="switchTab('fixed')">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+            <span>الالتزامات</span>
+        </button>
+        <button class="nav-item-mobile" id="nav-report" onclick="switchTab('report')">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>التقرير</span>
+        </button>
+    </div>
+
+
+    <!-- Google Drive Settings Modal -->
+    <div class="modal fade" id="googleSettingsModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:18px;">
+          <div class="modal-header">
+            <h5 class="modal-title"><i class="fa-brands fa-google-drive text-success me-2"></i>إعداد Google Drive</h5>
+            <button type="button" class="btn-close ms-0" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <label class="form-label fw-bold">Google OAuth Client ID</label>
+            <input id="google-client-id-input" class="form-control" dir="ltr"
+              placeholder="xxxxxxxx.apps.googleusercontent.com">
+            <div class="form-text mt-2">
+              يُحفظ Client ID على هذا الجهاز فقط. لا تدخل Client Secret هنا.
+            </div>
+            <div class="alert alert-info mt-3 mb-0 small">
+              يجب إضافة رابط تشغيل التطبيق HTTPS ضمن Authorized JavaScript origins في Google Cloud.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">إلغاء</button>
+            <button class="btn btn-primary" onclick="saveGoogleSettings()">حفظ وتفعيل</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ==========================================
+    // Desktop / Home Screen Shortcut Logic
+    // ==========================================
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const installBtn = document.getElementById('btn-install-shortcut');
+        if (installBtn) installBtn.style.display = 'inline-block';
+    });
+
+    function installAppShortcut() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    document.getElementById('btn-install-shortcut').style.display = 'none';
+                }
+                deferredPrompt = null;
+            });
+        } else {
+            alert('الإضافة لسطح المكتب: اضغط على خيارات المتصفح (⋮ أو زر المشاركة) ثم اختر "الإضافة إلى الشاشة الرئيسية" (Add to Home Screen)');
+        }
+    }
+
+    // ==========================================
+    // Google Drive Integration Logic
+    // ==========================================
+    let CLIENT_ID = localStorage.getItem('wallet_google_client_id') || ''; 
+    const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
+    
+    let tokenClient;
+    let accessToken = null;
+    let driveFileId = null;
+
+    function initGoogleAuth() {
+        if (!CLIENT_ID) {
+            document.getElementById('sync-status-text').innerText = 'أدخل Google Client ID من الإعدادات';
+            document.getElementById('sync-status-text').className = 'fs-7 fw-bold text-warning';
+            return;
+        }
+        if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
+            document.getElementById('sync-status-text').innerText = 'تعذر تحميل خدمة Google';
+            document.getElementById('sync-status-text').className = 'fs-7 fw-bold text-danger';
+            return;
+        }
+        tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: CLIENT_ID,
+            scope: SCOPES,
+            callback: async (tokenResponse) => {
+                if (tokenResponse.error) {
+                    document.getElementById('sync-status-text').innerText = 'فشل تسجيل الدخول إلى Google';
+                    document.getElementById('sync-status-text').className = 'fs-7 fw-bold text-danger';
+                    return;
+                }
+                if (tokenResponse.access_token) {
+                    accessToken = tokenResponse.access_token;
+                    document.getElementById('sync-status-text').innerText = 'جاري المزامنة مع Google Drive...';
+                    document.getElementById('sync-status-text').className = 'fs-7 fw-bold text-primary';
+                    await loadFromDrive();
+                }
+            },
+        });
+    }
+
+    function openGoogleSettings() {
+        document.getElementById('google-client-id-input').value =
+            localStorage.getItem('wallet_google_client_id') || '';
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('googleSettingsModal')).show();
+    }
+
+    function saveGoogleSettings() {
+        const value = document.getElementById('google-client-id-input').value.trim();
+        if (!value || !value.endsWith('.apps.googleusercontent.com')) {
+            alert('أدخل Google OAuth Client ID صحيحاً.');
+            return;
+        }
+        localStorage.setItem('wallet_google_client_id', value);
+        CLIENT_ID = value;
+        accessToken = null;
+        tokenClient = null;
+        initGoogleAuth();
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('googleSettingsModal')).hide();
+        alert('تم حفظ الإعداد. اضغط "ربط الحساب" لتسجيل الدخول إلى Google Drive.');
+    }
+
+    window.onload = () => {
+        initGoogleAuth();
+    };
+
+    function handleAuthClick() {
+        if (!CLIENT_ID) {
+            openGoogleSettings();
+            return;
+        }
+        if (!tokenClient) initGoogleAuth();
+        if (tokenClient) {
+            tokenClient.requestAccessToken({ prompt: 'consent' });
+        } else {
+            alert('تعذر الاتصال بـ Google Auth. تأكد من الإنترنت وإعداد Client ID ورابط HTTPS.');
+        }
+    }
+
+    async function loadFromDrive() {
+        if (!accessToken) return;
+        try {
+            let response = await fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name="my_wallet_data.json"', {
+                headers: { 'Authorization': 'Bearer ' + accessToken }
+            });
+            let data = await response.json();
+
+            if (data.files && data.files.length > 0) {
+                driveFileId = data.files[0].id;
+                let fileResp = await fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`, {
+                    headers: { 'Authorization': 'Bearer ' + accessToken }
+                });
+                let fileData = await fileResp.json();
+                
+                banks = fileData.banks || [];
+                creditCards = fileData.creditCards || [];
+                fixedExpenses = fileData.fixedExpenses || [];
+                debts = fileData.debts || [];
+                dailyExpenses = fileData.dailyExpenses || [];
+                
+                saveDataToLocalStorage();
+                renderAll();
+                document.getElementById('sync-status-text').innerText = 'تمت المزامنة بنجاح مع Drive';
+                document.getElementById('sync-status-text').className = 'fs-7 fw-bold text-success';
+            } else {
+                await saveToDrive();
+            }
+        } catch (err) {
+            console.error(err);
+            document.getElementById('sync-status-text').innerText = 'فشلت المزامنة!';
+            document.getElementById('sync-status-text').className = 'fs-7 fw-bold text-danger';
+        }
+    }
+
+    async function saveToDrive() {
+        if (!accessToken) return;
+
+        const payload = {
+            banks,
+            creditCards,
+            fixedExpenses,
+            debts,
+            dailyExpenses,
+            lastUpdated: new Date().toISOString()
+        };
+
+        const fileContent = JSON.stringify(payload);
+        const file = new Blob([fileContent], { type: 'application/json' });
+
+        try {
+            if (driveFileId) {
+                await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: fileContent
+                });
+            } else {
+                const metadata = {
+                    name: 'my_wallet_data.json',
+                    parents: ['appDataFolder']
+                };
+                const formData = new FormData();
+                formData.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+                formData.append('file', file);
+
+                let res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + accessToken },
+                    body: formData
+                });
+                let resData = await res.json();
+                driveFileId = resData.id;
+            }
+            document.getElementById('sync-status-text').innerText = 'تم الحفظ في Google Drive';
+            document.getElementById('sync-status-text').className = 'fs-7 fw-bold text-success';
+        } catch (err) {
+            console.error('Save to drive error:', err);
+        }
+    }
+
+    // ==========================================
+    // Local State Management
+    // ==========================================
+    let banks = JSON.parse(localStorage.getItem('my_banks')) || [];
+    let creditCards = JSON.parse(localStorage.getItem('my_credits')) || [];
+    let fixedExpenses = JSON.parse(localStorage.getItem('my_fixed')) || [];
+    let debts = JSON.parse(localStorage.getItem('my_debts')) || [];
+    let dailyExpenses = JSON.parse(localStorage.getItem('my_daily')) || [];
+
+    document.getElementById('daily-date').valueAsDate = new Date();
+
+    function switchTab(tabName) {
+        document.querySelectorAll('.app-tab-content').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.nav-item-mobile').forEach(el => el.classList.remove('active'));
+
+        document.getElementById(`tab-${tabName}`).style.display = 'block';
+        document.getElementById(`nav-${tabName}`).classList.add('active');
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function saveDataToLocalStorage() {
+        localStorage.setItem('my_banks', JSON.stringify(banks));
+        localStorage.setItem('my_credits', JSON.stringify(creditCards));
+        localStorage.setItem('my_fixed', JSON.stringify(fixedExpenses));
+        localStorage.setItem('my_debts', JSON.stringify(debts));
+        localStorage.setItem('my_daily', JSON.stringify(dailyExpenses));
+    }
+
+    function saveData() {
+        saveDataToLocalStorage();
+        renderAll();
+        if (accessToken) {
+            saveToDrive();
+        }
+    }
+
+    window.addEventListener('beforeunload', () => {
+        saveDataToLocalStorage();
+    });
+
+    // Handlers
+    document.getElementById('bank-form').onsubmit = (e) => {
+        e.preventDefault();
+        banks.push({
+            name: document.getElementById('bank-name').value,
+            balance: parseFloat(document.getElementById('bank-balance').value)
+        });
+        document.getElementById('bank-form').reset();
+        saveData();
+    };
+
+    document.getElementById('credit-card-form').onsubmit = (e) => {
+        e.preventDefault();
+        creditCards.push({
+            name: document.getElementById('credit-card-name').value,
+            limit: parseFloat(document.getElementById('credit-card-limit').value),
+            used: parseFloat(document.getElementById('credit-card-used').value) || 0
+        });
+        document.getElementById('credit-card-form').reset();
+        saveData();
+    };
+
+    document.getElementById('fixed-form').onsubmit = (e) => {
+        e.preventDefault();
+        let amount = parseFloat(document.getElementById('fixed-amount').value);
+        let source = document.getElementById('fixed-source').value;
+
+        processPayment(source, amount);
+
+        fixedExpenses.push({
+            title: document.getElementById('fixed-title').value,
+            amount: amount,
+            source: source
+        });
+        document.getElementById('fixed-form').reset();
+        saveData();
+    };
+
+    document.getElementById('debt-form').onsubmit = (e) => {
+        e.preventDefault();
+        debts.push({
+            person: document.getElementById('debt-person').value,
+            type: document.getElementById('debt-type').value,
+            amount: parseFloat(document.getElementById('debt-amount').value)
+        });
+        document.getElementById('debt-form').reset();
+        saveData();
+    };
+
+    document.getElementById('daily-form').onsubmit = (e) => {
+        e.preventDefault();
+        let amount = parseFloat(document.getElementById('daily-amount').value);
+        let source = document.getElementById('daily-source').value;
+
+        processPayment(source, amount);
+
+        dailyExpenses.push({
+            item: document.getElementById('daily-item').value,
+            amount: amount,
+            source: source,
+            date: document.getElementById('daily-date').value
+        });
+
+        document.getElementById('daily-item').value = '';
+        document.getElementById('daily-amount').value = '';
+        saveData();
+    };
+
+    function processPayment(source, amount) {
+        if (source !== 'كاش / نقدي' && source !== 'غير محدد') {
+            let bankIndex = banks.findIndex(b => b.name === source);
+            if (bankIndex !== -1) {
+                banks[bankIndex].balance -= amount;
+            } else {
+                let ccIndex = creditCards.findIndex(c => `بطاقة: ${c.name}` === source);
+                if (ccIndex !== -1) {
+                    creditCards[ccIndex].used += amount;
+                }
+            }
+        }
+    }
+
+    function deleteItem(type, index) {
+        if(type === 'bank') banks.splice(index, 1);
+        if(type === 'credit') creditCards.splice(index, 1);
+        if(type === 'fixed') {
+            let item = fixedExpenses[index];
+            revertPayment(item.source, item.amount);
+            fixedExpenses.splice(index, 1);
+        }
+        if(type === 'debt') debts.splice(index, 1);
+        if(type === 'daily') {
+            let item = dailyExpenses[index];
+            revertPayment(item.source, item.amount);
+            dailyExpenses.splice(index, 1);
+        }
+        saveData();
+    }
+
+    function revertPayment(source, amount) {
+        if (source && source !== 'كاش / نقدي') {
+            let bankIndex = banks.findIndex(b => b.name === source);
+            if (bankIndex !== -1) {
+                banks[bankIndex].balance += amount;
+            } else {
+                let ccIndex = creditCards.findIndex(c => `بطاقة: ${c.name}` === source);
+                if (ccIndex !== -1) {
+                    creditCards[ccIndex].used -= amount;
+                }
+            }
+        }
+    }
+
+    function updateSelectOptions() {
+        let selects = [document.getElementById('daily-source'), document.getElementById('fixed-source')];
+        
+        selects.forEach(select => {
+            select.innerHTML = '<option value="كاش / نقدي">كاش / نقدي</option>';
+            
+            if(banks.length > 0) {
+                let bankGroup = document.createElement('optgroup');
+                bankGroup.label = "الحسابات البنكية";
+                banks.forEach(b => {
+                    let opt = document.createElement('option');
+                    opt.value = b.name;
+                    opt.innerText = b.name;
+                    bankGroup.appendChild(opt);
+                });
+                select.appendChild(bankGroup);
+            }
+
+            if(creditCards.length > 0) {
+                let ccGroup = document.createElement('optgroup');
+                ccGroup.label = "البطاقات الائتمانية";
+                creditCards.forEach(c => {
+                    let opt = document.createElement('option');
+                    opt.value = `بطاقة: ${c.name}`;
+                    opt.innerText = `بطاقة: ${c.name}`;
+                    ccGroup.appendChild(opt);
+                });
+                select.appendChild(ccGroup);
+            }
+        });
+    }
+
+    function renderAll() {
+        updateSelectOptions();
+
+        let bankHtml = '';
+        let totalBank = 0;
+        banks.forEach((b, i) => {
+            totalBank += b.balance;
+            bankHtml += `
+                <div class="data-card-item" style="border-right-color: #2563eb;">
+                    <div>
+                        <div class="item-title">${b.name}</div>
+                        <div class="item-sub">حساب بنكي</div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="item-amount text-primary me-2">${b.balance.toFixed(2)} ر.س</div>
+                        <button class="btn-delete" onclick="deleteItem('bank', ${i})"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </div>`;
+        });
+        document.getElementById('bank-list-mobile').innerHTML = bankHtml || '<div class="text-center text-muted fs-7 py-3">لا توجد حسابات مضافة</div>';
+
+        let ccHtml = '';
+        let totalCreditUsed = 0;
+        creditCards.forEach((c, i) => {
+            let remaining = c.limit - c.used;
+            totalCreditUsed += c.used;
+            ccHtml += `
+                <div class="data-card-item" style="border-right-color: #7c3aed;">
+                    <div>
+                        <div class="item-title">${c.name}</div>
+                        <div class="item-sub">الحد: ${c.limit.toFixed(2)} | المتبقي: ${remaining.toFixed(2)}</div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="item-amount text-purple me-2" style="color: #7c3aed;">${c.used.toFixed(2)} ر.س</div>
+                        <button class="btn-delete" onclick="deleteItem('credit', ${i})"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </div>`;
+        });
+        document.getElementById('credit-card-list-mobile').innerHTML = ccHtml || '<div class="text-center text-muted fs-7 py-3">لا توجد بطاقات ائتمانية</div>';
+
+        let fixedHtml = '';
+        let totalFixed = 0;
+        fixedExpenses.forEach((f, i) => {
+            totalFixed += f.amount;
+            fixedHtml += `
+                <div class="data-card-item" style="border-right-color: #d97706;">
+                    <div>
+                        <div class="item-title">${f.title}</div>
+                        <div class="item-sub">المصدر: ${f.source || 'غير محدد'}</div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="item-amount text-warning me-2" style="color: #d97706;">${f.amount.toFixed(2)} ر.س</div>
+                        <button class="btn-delete" onclick="deleteItem('fixed', ${i})"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </div>`;
+        });
+        document.getElementById('fixed-list-mobile').innerHTML = fixedHtml || '<div class="text-center text-muted fs-7 py-3">لا توجد التزامات مسجلة</div>';
+
+        let debtHtml = '';
+        let totalCredit = 0;
+        let totalDebit = 0;
+        debts.forEach((d, i) => {
+            if(d.type === 'مدين') totalCredit += d.amount;
+            else totalDebit += d.amount;
+            let color = d.type === 'مدين' ? '#059669' : '#dc2626';
+            debtHtml += `
+                <div class="data-card-item" style="border-right-color: ${color};">
+                    <div>
+                        <div class="item-title">${d.person}</div>
+                        <div class="item-sub"><span class="badge ${d.type === 'مدين' ? 'bg-success' : 'bg-danger'}">${d.type}</span></div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="item-amount me-2" style="color: ${color};">${d.amount.toFixed(2)} ر.س</div>
+                        <button class="btn-delete" onclick="deleteItem('debt', ${i})"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </div>`;
+        });
+        document.getElementById('debt-list-mobile').innerHTML = debtHtml || '<div class="text-center text-muted fs-7 py-3">لا يوجد ديون مسجلة</div>';
+
+        let dailyHtml = '';
+        let totalDaily = 0;
+        dailyExpenses.forEach((dl, i) => {
+            totalDaily += dl.amount;
+            dailyHtml += `
+                <div class="data-card-item" style="border-right-color: #dc2626;">
+                    <div>
+                        <div class="item-title">${dl.item}</div>
+                        <div class="item-sub">${dl.date} • ${dl.source || 'كاش'}</div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="item-amount text-danger me-2">${dl.amount.toFixed(2)} ر.س</div>
+                        <button class="btn-delete" onclick="deleteItem('daily', ${i})"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </div>`;
+        });
+        document.getElementById('daily-list-mobile').innerHTML = dailyHtml || '<div class="text-center text-muted fs-7 py-3">لم تعبر أي مصاريف اليوم</div>';
+        document.getElementById('daily-count-badge').innerText = `${dailyExpenses.length} مصروف`;
+
+        document.getElementById('total-bank-balance').innerText = totalBank.toFixed(2) + ' ر.س';
+        document.getElementById('total-credit-used').innerText = totalCreditUsed.toFixed(2) + ' ر.س';
+        document.getElementById('total-fixed-expenses').innerText = totalFixed.toFixed(2) + ' ر.س';
+        
+        let net = totalBank - (totalFixed + totalDebit + totalCreditUsed);
+        document.getElementById('net-balance').innerText = net.toFixed(2) + ' ر.س';
+
+        let badge = document.getElementById('eval-badge');
+        let text = document.getElementById('eval-text');
+        badge.className = 'badge-status bg-secondary text-white';
+        badge.innerText = 'في انتظار التحديث';
+        text.innerText = 'اضغط على زر التحديث أدناه لحساب تقييمك المالي الأخير.';
+    }
+
+    function calculateReport() {
+        let totalBank = banks.reduce((a, b) => a + b.balance, 0);
+        let totalCreditUsed = creditCards.reduce((a, b) => a + b.used, 0);
+        let totalFixed = fixedExpenses.reduce((a, b) => a + b.amount, 0);
+        let totalDaily = dailyExpenses.reduce((a, b) => a + b.amount, 0);
+        let totalCredit = debts.filter(d => d.type === 'مدين').reduce((a, b) => a + b.amount, 0);
+        let totalDebit = debts.filter(d => d.type === 'دائن').reduce((a, b) => a + b.amount, 0);
+
+        let totalAssets = totalBank + totalCredit;
+        let totalLiabilities = totalFixed + totalDebit + totalCreditUsed;
+        let grandTotalSpent = totalFixed + totalDaily;
+
+        document.getElementById('rep-assets').innerText = totalAssets.toFixed(2) + ' ر.س';
+        document.getElementById('rep-liabilities').innerText = totalLiabilities.toFixed(2) + ' ر.س';
+        document.getElementById('rep-daily').innerText = totalDaily.toFixed(2) + ' ر.س';
+        document.getElementById('rep-total-spent').innerText = grandTotalSpent.toFixed(2) + ' ر.س';
+
+        let badge = document.getElementById('eval-badge');
+        let text = document.getElementById('eval-text');
+
+        if (totalBank === 0 && grandTotalSpent === 0 && totalLiabilities === 0) {
+            badge.className = 'badge-status bg-secondary text-white';
+            badge.innerText = 'لا توجد بيانات كافية';
+            text.innerText = 'يرجى إدخال أرصدتك ومصروفاتك للبدء في التقييم.';
+            return;
+        }
+
+        let totalInitialCapital = totalAssets + grandTotalSpent;
+        let ratio = totalInitialCapital > 0 ? (grandTotalSpent / totalInitialCapital) * 100 : 0;
+
+        if (totalBank < 0 || grandTotalSpent > totalAssets) {
+            badge.className = 'badge-status bg-danger text-white';
+            badge.innerText = 'مخاطر عالية (حرِج)';
+            text.innerText = 'مصاريفك والتزاماتك تتجاوز إجمالي أرصدتك المتاحة! ينصح بالحد من المصروفات اليومية.';
+        } else if (ratio > 70) {
+            badge.className = 'badge-status bg-warning text-dark';
+            badge.innerText = 'استهلاك مرتفع';
+            text.innerText = `تستهلك ${ratio.toFixed(1)}% من مجموع السيولة. حاول ضبط النفقات لزيادة الادخار.`;
+        } else if (ratio > 40) {
+            badge.className = 'badge-status bg-info text-white';
+            badge.innerText = 'إدارة متوازنة';
+            text.innerText = `مصاريفك ضمن النطاق المقبول (${ratio.toFixed(1)}%). وضعك المالي ممتاز ومتوازن.`;
+        } else {
+            badge.className = 'badge-status bg-success text-white';
+            badge.innerText = 'إدارة ممتازة جداً';
+            text.innerText = `أداء ممتاز! استهلاكك منخفض (${ratio.toFixed(1)}%). واصل التخطيط والادخار الناجح.`;
+        }
+    }
+
+    renderAll();
+
+    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').catch(err => console.warn('SW:', err));
+        });
+    }
+</script>
+</body>
+</html>

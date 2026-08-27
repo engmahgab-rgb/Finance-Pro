@@ -1,0 +1,12 @@
+{
+  "name": "محفظتي المالية",
+  "short_name": "محفظتي",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f1f5f9",
+  "theme_color": "#1e293b",
+  "description": "إدارة المصروفات والحسابات والالتزامات مع مزامنة Google Drive"
+}
