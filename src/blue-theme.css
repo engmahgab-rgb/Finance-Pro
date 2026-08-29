@@ -67,6 +67,16 @@ nav a.active, nav a:hover { background: var(--blue-soft); color: var(--green); }
 
 .filters #search { grid-column: 1 / -1; }
 
+.chart-canvas { height: 240px; margin-top: .75rem; }
+.chart-canvas canvas { max-width: 100%; }
+
+.calendar-days { display: flex; flex-wrap: wrap; gap: .6rem; }
+.calendar-days button { min-width: 44px; min-height: 44px; }
+
+[dir="rtl"] .row,
+[dir="rtl"] .settings-row,
+[dir="rtl"] .card-title { text-align: right; }
+
 @media (max-width: 480px) {
   .filters { grid-template-columns: 1fr; }
   .filters #search { grid-column: auto; }
