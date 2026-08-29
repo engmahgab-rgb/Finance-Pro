@@ -110,6 +110,39 @@ nav a.active, nav a:hover { background: var(--blue-soft); color: var(--green); }
   .dashboard-actions .primary { width: 100%; }
   .metrics { margin: 12px 0; gap: 10px; }
   .card, .metrics article, .account-card, .card-toolbar { padding: 15px; }
+
+  :root { --page: #f4f7fc; --surface: #ffffff; --line: #e4ebf5; --ink: #14213a; --muted: #64748b; }
+  main { background: linear-gradient(180deg, #f7faff 0%, #f4f7fc 38%, #f4f7fc 100%); }
+  .eyebrow { color: #2e73dc; letter-spacing: .11em; }
+  header { padding-top: 2px; }
+  header h1 { font-size: clamp(24px, 7vw, 29px); line-height: 1.05; }
+  header .primary { border-radius: 13px; box-shadow: 0 8px 18px #1769e02e; font-size: 12px; }
+  .hero { min-height: 154px; padding: 22px 20px; border-radius: 22px; background: linear-gradient(140deg, #0d4c9d 0%, #1769e0 58%, #569df7 100%); box-shadow: 0 16px 28px #1769e02b; }
+  .hero-profile > div > b { font-size: 31px; letter-spacing: -.05em; }
+  .hero span { max-width: 28ch; line-height: 1.45; }
+  .dashboard-actions { position: relative; z-index: 2; margin: -18px 12px 16px; }
+  .dashboard-actions .primary { min-height: 50px; border: 1px solid #dbe9ff; border-radius: 15px; background: #fff; color: #145ec5; box-shadow: 0 10px 24px #1d5da920; }
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .metrics article { min-height: 112px; border-radius: 17px; box-shadow: 0 8px 20px #1a36510b; }
+  .metrics article p { margin-bottom: 8px; font-weight: 650; }
+  .metrics article b { font-size: 18px; }
+  .card, .account-card, .card-toolbar { border-radius: 18px; box-shadow: 0 8px 22px #1a36510a; }
+  .card-title { gap: 12px; }
+  .card-title h3 { font-size: 16px; }
+  .row { min-height: 62px; gap: 12px; }
+  .row-edit, .row-cancel { min-height: 36px; border-radius: 10px; }
+  .bubble { width: 38px; height: 38px; border-radius: 12px; }
+  .account-grid { gap: 12px; }
+  .account-card { padding: 18px; }
+  .account-card h3 { margin: 15px 0 17px; }
+  .filters { gap: 9px; }
+  .filters input, .filters select { border-radius: 13px; background: #fbfdff; }
+  .mobile-nav { padding-inline: 8px; border-top-color: #dbe7f8; background: color-mix(in srgb, #ffffff 95%, #eaf2ff); box-shadow: 0 -12px 30px #163d710f; }
+  .mobile-nav a, .mobile-nav button { border-radius: 14px; color: #66758b; }
+  .mobile-nav .active { background: #e5f0ff; color: #135fc9; box-shadow: none; }
+  .more-sheet { border-radius: 26px 26px 0 0; }
+  .more-sheet::before { content: ''; display: block; width: 38px; height: 4px; margin: -7px auto 15px; border-radius: 99px; background: #d4dfef; }
+  .more-sheet nav a { min-height: 58px; border-color: #e1eaf6; background: #fbfdff; }
 }
 
 @media (max-width: 360px) {
