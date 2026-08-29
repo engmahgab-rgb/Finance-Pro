@@ -1,4 +1,5 @@
 /* Finance Pro visual system. Layout fundamentals remain in styles.css; this file owns the product theme and mobile navigation. */
+/* More-sheet label and SVG navigation release: 2026-08-29. */
 :root {
   --color-primary: #1769e0; --color-primary-soft: #eaf2ff; --color-success: #11875d; --color-danger: #c0364d; --color-warning: #c77812; --color-budget: #7855d8; --color-recurring: #d97706; --color-forecast: #0f8b8d;
   --bg-app: #f4f7fc; --surface: #fff; --surface-elevated: #fff; --text-primary: #17233a; --text-secondary: #61708a; --border: #dfe7f3;
