@@ -27,13 +27,14 @@ export async function preserveLocalBackup(reason: 'before_import' | 'before_rest
 
 export async function restoreBackup(backup: FinanceBackup): Promise<void> {
   await preserveLocalBackup('before_restore');
-  const tables = [db.accounts, db.transactions, db.categories, db.budgets, db.recurring, db.goals, db.plannedTransactions, db.settings, db.notifications, db.attachments, db.debts, db.debtPayments, db.syncMetadata] as const;
-  await db.transaction('rw', ...tables, async () => {
-    for (const table of tables) {
+  const tableMap = db as unknown as Record<string, { clear(): Promise<void>; bulkAdd(values: unknown[]): Promise<unknown> }>;
+  const transact = db.transaction as unknown as (mode: 'rw', tables: typeof db.tables, scope: () => Promise<void>) => Promise<void>;
+  await transact('rw', db.tables, async () => {
+    for (const table of db.tables) {
       if (table.name === 'localBackups') continue;
-      await table.clear();
+      await tableMap[table.name].clear();
       const values = backup.data[table.name];
-      if (values?.length) await table.bulkAdd(values);
+      if (values?.length) await tableMap[table.name].bulkAdd(values);
     }
   });
 }
