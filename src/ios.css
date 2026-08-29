@@ -11,11 +11,7 @@ aside { height: 100dvh; }
 @media (max-width: 600px) {
   main { padding: calc(18px + env(safe-area-inset-top)) 16px calc(76px + env(safe-area-inset-bottom)); margin: 0; }
   aside { height: calc(60px + env(safe-area-inset-bottom)); padding: 5px 5px env(safe-area-inset-bottom); }
-  nav a { padding: 11px 12px; min-width: 44px; min-height: 44px; justify-content: center; align-items: center; }
   .primary, .secondary { min-height: 44px; }
   .modal { padding: 20px; }
   .modal input, .modal select { min-height: 44px; font-size: 16px; }
-  aside nav { display: flex; justify-content: flex-start; gap: 4px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-  aside nav::-webkit-scrollbar { display: none; }
-  aside nav a { flex: 0 0 52px; }
 }
