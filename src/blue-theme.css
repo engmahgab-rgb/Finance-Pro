@@ -150,7 +150,7 @@ nav a.active, nav a:hover { background: var(--blue-soft); color: var(--green); }
   .mobile-nav i { width: 33px; height: 33px; display: grid; place-items: center; border-radius: 11px; background: linear-gradient(145deg, #ffffff, #d8e8ff); border: 1px solid #c7dcfb; box-shadow: 0 3px 0 #a7c7ef, 0 6px 12px #1a65bd22; color: #145ec5; font-size: 21px; line-height: 1; transform: none !important; }
   .mobile-nav span { height: 12px; display: block; line-height: 12px; }
   .mobile-nav .active { transform: none !important; background: transparent; color: #0d4fbb; box-shadow: none; }
-  .mobile-nav .active i { transform: none !important; background: linear-gradient(145deg, #5da4ff, #1769e0); border-color: #1769e0; box-shadow: 0 3px 0 #0c4ca3, 0 7px 14px #1769e03b; color: #fff; }
+  .mobile-nav .active i { transform: none !important; background: linear-gradient(145deg, #5da4ff, #1769e0); border-color: #1769e0; box-shadow: 0 3px 0 #a7c7ef, 0 6px 12px #1a65bd22; color: #fff; }
 
   /* Never allow route changes to shift a mobile tab vertically. */
   .mobile-nav, .mobile-nav *, .mobile-nav .active, .mobile-nav .active * { transform: none !important; transition: none !important; }
