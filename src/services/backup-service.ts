@@ -27,8 +27,9 @@ export async function preserveLocalBackup(reason: 'before_import' | 'before_rest
 
 export async function restoreBackup(backup: FinanceBackup): Promise<void> {
   await preserveLocalBackup('before_restore');
-  await db.transaction('rw', ...db.tables, async () => {
-    for (const table of db.tables) {
+  const tables = [db.accounts, db.transactions, db.categories, db.budgets, db.recurring, db.goals, db.plannedTransactions, db.settings, db.notifications, db.attachments, db.debts, db.debtPayments, db.syncMetadata] as const;
+  await db.transaction('rw', ...tables, async () => {
+    for (const table of tables) {
       if (table.name === 'localBackups') continue;
       await table.clear();
       const values = backup.data[table.name];
