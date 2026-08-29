@@ -20,9 +20,11 @@ export async function ensurePaymentAccounts(): Promise<void> {
   if (additions.length) await db.accounts.bulkAdd(additions);
 }
 export async function createTransaction(input: Omit<Transaction, 'id' | 'createdAt'>): Promise<void> { await db.transactions.add({ ...input, id: uuid(), createdAt: new Date().toISOString() }); }
+/** Moves money between two accounts, for example cash to bank or bank to a credit-card payment. */
+export async function transferMoney(sourceAccountId: string, destinationAccountId: string, amount: number, date: string, note: string): Promise<void> { await createTransaction({ accountId: sourceAccountId, destinationAccountId, kind: 'transfer', amount, date, note, tags: [] }); }
 export async function createAccount(input: Omit<Account, 'id' | 'createdAt'>): Promise<void> { await db.accounts.add({ ...input, id: uuid(), createdAt: new Date().toISOString() }); }
 export async function createRecurring(input: Omit<Recurring, 'id'>): Promise<void> { await db.recurring.add({ ...input, id: uuid() }); }
 export async function totalsForMonth(month: string): Promise<{ income: number; expenses: number }> { const txs = await db.transactions.where('date').between(`${month}-01`, `${month}-31`, true, true).toArray(); return txs.reduce((total, tx) => ({ income: total.income + (tx.kind === 'income' ? tx.amount : 0), expenses: total.expenses + (tx.kind === 'expense' ? tx.amount : 0) }), { income: 0, expenses: 0 }); }
-export async function accountBalance(account: Account): Promise<number> { const txs = await db.transactions.where('accountId').equals(account.id).toArray(); const direction = account.type === 'credit' ? -1 : 1; return txs.reduce((value, tx) => value + (tx.kind === 'income' ? tx.amount * direction : -tx.amount * direction), account.openingBalance); }
+export async function accountBalance(account: Account): Promise<number> { const txs = await db.transactions.toArray(); const direction = account.type === 'credit' ? -1 : 1; return txs.reduce((value, tx) => { if (tx.accountId === account.id) return value + (tx.kind === 'income' ? tx.amount * direction : -tx.amount * direction); if (tx.destinationAccountId === account.id) return value + tx.amount * direction; return value; }, account.openingBalance); }
 export async function saveBudget(input: Omit<Budget, 'id'>): Promise<void> { await db.budgets.put({ ...input, id: uuid() }); }
 export const transactionKinds: TransactionKind[] = ['expense', 'income', 'transfer'];
