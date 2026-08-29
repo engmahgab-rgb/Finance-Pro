@@ -1,14 +1,14 @@
 import { v4 as uuid } from 'uuid';
 import { db } from '../database/db';
 import type { Account, Budget, Category, Recurring, Transaction, TransactionKind } from '../core/types';
+import { accountBalanceFromLedger } from './ledger-service';
 
 const today = () => new Date().toISOString().slice(0, 10);
-/** Seeds a useful first-run workspace without overwriting user data. */
+/** Adds reusable categories only. Financial accounts and transactions are always user-created. */
 export async function seedDatabase(): Promise<void> {
-  if (await db.accounts.count()) return;
-  const account: Account = { id: uuid(), name: 'Main account', type: 'bank', openingBalance: 2400, color: '#126b4b', createdAt: today() };
-  const categories: Category[] = [['Salary', '↗', '#16876a', 'income'], ['Food & dining', '◉', '#e68a38', 'expense'], ['Transport', '⌁', '#3c78d8', 'expense'], ['Subscriptions', '◌', '#8657c5', 'expense'], ['Shopping', '◇', '#de5a72', 'expense']].map(([name, icon, color, kind]) => ({ id: uuid(), name, icon, color, kind: kind as Category['kind'] }));
-  await db.transaction('rw', db.accounts, db.categories, db.transactions, async () => { await db.accounts.add(account); await db.categories.bulkAdd(categories); await db.transactions.bulkAdd([{ id: uuid(), accountId: account.id, categoryId: categories[0].id, kind: 'income', amount: 3800, date: today(), note: 'Monthly salary', tags: [], createdAt: today() }, { id: uuid(), accountId: account.id, categoryId: categories[1].id, kind: 'expense', amount: 64.5, date: today(), note: 'Market', tags: [], createdAt: today() }]); });
+  if (await db.categories.count()) return;
+  const categories: Category[] = [['Salary', '↗', '#16876a', 'income'], ['Bonus', '✦', '#2674a8', 'income'], ['Other income', '＋', '#6657c5', 'income'], ['Groceries', '◉', '#e68a38', 'expense'], ['Restaurants', '◌', '#d96554', 'expense'], ['Fuel & car', '⌁', '#3c78d8', 'expense'], ['Housing', '⌂', '#7d6bc9', 'expense'], ['Utilities', '⌁', '#3c78d8', 'expense'], ['Family', '♥', '#de5a72', 'expense'], ['Healthcare', '✚', '#16876a', 'expense'], ['Travel', '✈', '#2674a8', 'expense'], ['Education', '◫', '#6657c5', 'expense'], ['Shopping', '◇', '#de5a72', 'expense'], ['Subscriptions', '↻', '#8657c5', 'expense'], ['Charity', '♡', '#16876a', 'expense'], ['Entertainment', '★', '#e68a38', 'expense']].map(([name, icon, color, kind]) => ({ id: uuid(), name, icon, color, kind: kind as Category['kind'] }));
+  await db.categories.bulkAdd(categories);
 }
 /** Ensures cash and credit-card payment sources are available for recording purchases. */
 export async function ensurePaymentAccounts(): Promise<void> {
@@ -29,6 +29,6 @@ export async function createRecurring(input: Omit<Recurring, 'id'>): Promise<voi
 export async function updateRecurring(id: string, input: Omit<Recurring, 'id'>): Promise<void> { await db.recurring.update(id, input); }
 export async function deleteRecurring(id: string): Promise<void> { await db.recurring.delete(id); }
 export async function totalsForMonth(month: string): Promise<{ income: number; expenses: number }> { const txs = await db.transactions.where('date').between(`${month}-01`, `${month}-31`, true, true).toArray(); return txs.reduce((total, tx) => ({ income: total.income + (tx.kind === 'income' ? tx.amount : 0), expenses: total.expenses + (tx.kind === 'expense' ? tx.amount : 0) }), { income: 0, expenses: 0 }); }
-export async function accountBalance(account: Account): Promise<number> { const txs = await db.transactions.toArray(); const direction = account.type === 'credit' ? -1 : 1; return txs.reduce((value, tx) => { if (tx.accountId === account.id) return value + (tx.kind === 'income' ? tx.amount * direction : -tx.amount * direction); if (tx.destinationAccountId === account.id) return value + tx.amount * direction; return value; }, account.openingBalance); }
+export async function accountBalance(account: Account): Promise<number> { return accountBalanceFromLedger(account, await db.transactions.toArray()); }
 export async function saveBudget(input: Omit<Budget, 'id'>): Promise<void> { await db.budgets.put({ ...input, id: uuid() }); }
 export const transactionKinds: TransactionKind[] = ['expense', 'income', 'transfer'];
