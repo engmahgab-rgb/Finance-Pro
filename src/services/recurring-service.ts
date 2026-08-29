@@ -1,0 +1,21 @@
+import type { Recurring } from '../core/types';
+
+export function nextRecurringDate(item: Recurring, from = item.nextDate): string {
+  const date = new Date(`${from}T12:00:00`);
+  if (item.cadence === 'weekly') date.setDate(date.getDate() + 7);
+  if (item.cadence === 'monthly') date.setMonth(date.getMonth() + 1);
+  if (item.cadence === 'yearly') date.setFullYear(date.getFullYear() + 1);
+  return date.toISOString().slice(0, 10);
+}
+
+export function applyRecurringPayment(item: Recurring, paidDate: string): Pick<Recurring, 'nextDate' | 'paidInstallments' | 'active'> {
+  const paidInstallments = (item.paidInstallments ?? 0) + 1;
+  const installmentComplete = Boolean(item.totalInstallments && paidInstallments >= item.totalInstallments);
+  const nextDate = nextRecurringDate(item, paidDate);
+  const pastEndDate = Boolean(item.endDate && nextDate > item.endDate);
+  return { nextDate, paidInstallments, active: !installmentComplete && !pastEndDate };
+}
+
+export function skipRecurringOccurrence(item: Recurring): Pick<Recurring, 'nextDate' | 'skippedDates'> {
+  return { nextDate: nextRecurringDate(item), skippedDates: [...(item.skippedDates ?? []), item.nextDate] };
+}
