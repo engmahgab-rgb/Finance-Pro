@@ -8,7 +8,7 @@ import './ios.css';
 
 registerSW({ immediate: true });
 const app = document.querySelector<HTMLDivElement>('#app')!;
-const money = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' });
+const money = new Intl.NumberFormat('en-SA', { style: 'currency', currency: 'SAR', maximumFractionDigits: 2 });
 const month = new Date().toISOString().slice(0, 7);
 const labels: Record<string, string> = { dashboard: 'Dashboard', accounts: 'Accounts', transactions: 'Transactions', categories: 'Categories', budgets: 'Budgets', recurring: 'Recurring', forecast: 'Forecast', reports: 'Reports', calendar: 'Calendar', notifications: 'Notifications', backup: 'Backup', settings: 'Settings' };
 const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
