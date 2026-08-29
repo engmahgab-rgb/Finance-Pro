@@ -66,6 +66,7 @@ nav a.active, nav a:hover { background: var(--color-primary-soft); color: var(--
 
 /* The mobile navigation is intentionally owned here, not by the desktop sidebar. */
 .mobile-nav, .more-sheet-backdrop { display: none; }
+.nav-icon { width: 1.15em; height: 1.15em; display: block; }
 @media (max-width: 600px) {
   *, *::before, *::after { box-sizing: border-box; }
   body { overflow-x: hidden; }
@@ -78,6 +79,7 @@ nav a.active, nav a:hover { background: var(--color-primary-soft); color: var(--
   .mobile-nav { position: fixed; inset: auto 0 0; z-index: 30; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-rows: 1fr; align-items: stretch; height: calc(74px + env(safe-area-inset-bottom)); padding: 6px 7px env(safe-area-inset-bottom); border-top: 1px solid var(--border); background: color-mix(in srgb, var(--surface) 95%, var(--color-primary-soft)); box-shadow: 0 -12px 30px rgb(22 61 113 / 7%); }
   .mobile-nav > a, .mobile-nav > button { display: grid; grid-template-rows: 34px 12px; place-content: center; place-items: center; align-content: center; gap: 4px; width: 100%; min-width: 0; height: 100%; margin: 0; padding: 4px 2px; border: 0; border-radius: 14px; background: transparent; color: var(--text-secondary); font: inherit; font-size: 10px; font-weight: 750; line-height: 12px; text-align: center; white-space: nowrap; }
   .mobile-nav i { display: grid; grid-row: 1; place-items: center; width: 33px; height: 33px; border: 1px solid #c7dcfb; border-radius: 11px; background: linear-gradient(145deg, #fff, #d8e8ff); box-shadow: 0 3px 0 #a7c7ef, 0 6px 12px rgb(26 101 189 / 13%); color: var(--color-primary); font-size: 20px; font-style: normal; line-height: 1; }
+  .mobile-nav i .nav-icon { width: 20px; height: 20px; }
   .mobile-nav span { grid-row: 2; display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
   .mobile-nav .active { color: #0d4fbb; }
   .mobile-nav .active i { border-color: var(--color-primary); background: linear-gradient(145deg, #5da4ff, var(--color-primary)); color: #fff; }
@@ -89,8 +91,10 @@ nav a.active, nav a:hover { background: var(--color-primary-soft); color: var(--
   .more-sheet-heading h2 { margin: 0; font-size: 20px; }
   .more-sheet-heading button { width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--color-primary-soft); color: var(--color-primary); font-size: 25px; }
   .more-sheet nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .more-sheet nav a { display: flex; align-items: center; gap: 9px; min-width: 0; min-height: 58px; padding: 11px; border: 1px solid var(--border); border-radius: 13px; background: #fbfdff; color: var(--text-primary); font-weight: 750; }
-  .more-sheet nav i { width: 20px; color: var(--color-primary); font-style: normal; text-align: center; }
+  .more-sheet nav a { display: flex; align-items: center; gap: 9px; min-width: 0; min-height: 58px; padding: 11px; border: 1px solid var(--border); border-radius: 13px; background: #fbfdff; color: var(--text-primary); font-size: 13px; font-weight: 750; }
+  .more-sheet nav i { display: grid; place-items: center; width: 28px; height: 28px; flex: 0 0 28px; border-radius: 9px; background: var(--color-primary-soft); color: var(--color-primary); font-style: normal; text-align: center; }
+  .more-sheet nav i .nav-icon { width: 17px; height: 17px; }
+  .more-sheet nav span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hero { min-height: 154px; margin-block-end: 10px; padding: 22px 20px; border-radius: 22px; }
   .finance-art { display: none; }
   .dashboard-actions { position: relative; z-index: 1; margin: -18px 12px var(--space-md); }
