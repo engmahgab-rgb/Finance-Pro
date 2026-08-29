@@ -45,3 +45,29 @@ nav a.active, nav a:hover { background: var(--blue-soft); color: var(--green); }
   .finance-art { display: none; }
   .hero-profile > div > b { font-size: 28px; }
 }
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+  margin: 0 0 1rem;
+}
+
+.filters input,
+.filters select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line, #dbe5f5);
+  border-radius: 12px;
+  background: var(--surface, #fff);
+  color: inherit;
+  padding: 0 .75rem;
+  font: inherit;
+}
+
+.filters #search { grid-column: 1 / -1; }
+
+@media (max-width: 480px) {
+  .filters { grid-template-columns: 1fr; }
+  .filters #search { grid-column: auto; }
+}
