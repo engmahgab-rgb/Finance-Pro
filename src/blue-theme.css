@@ -1,0 +1,24 @@
+/* Blue visual system and iPhone-friendly tab treatment. */
+:root { --green: #1769e0; --blue-soft: #eaf2ff; --blue-dark: #0c4ca3; }
+nav a.active, nav a:hover { background: var(--blue-soft); color: var(--green); }
+.brand span, .primary { background: linear-gradient(135deg, #2478ee, #1258c8); }
+.primary { box-shadow: 0 8px 18px #1769e033; }
+.secondary { background: #edf4ff; color: var(--blue-dark); }
+.hero { background: linear-gradient(125deg, #0d4da5, #3386f3); }
+.health b { border-color: #a6ceff; border-left-color: #ffffff55; }
+.bubble { background: #edf4ff; color: var(--green); }
+.positive { color: #157a55; }
+.budget i { background: linear-gradient(90deg, #1769e0, #5ca6ff); }
+.chart-placeholder i { background: linear-gradient(#8bc0ff, #1769e0); }
+.install-tip { background: #eaf2ff; border-color: #b9d5ff; color: #0c4ca3; }
+.install-tip p small, .install-tip button { color: #1d61b7; }
+.backup-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.backup-actions label { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.backup-note { margin-top: 26px !important; padding: 14px; border-radius: 10px; background: #edf4ff; color: #285588 !important; font-size: 13px; }
+@media (max-width: 600px) {
+  aside { background: color-mix(in srgb, var(--surface) 92%, #eaf2ff); border-top: 1px solid #d6e6ff; box-shadow: 0 -10px 30px #1769e01a; }
+  nav { gap: 4px; }
+  nav a { border-radius: 14px; transition: background .2s ease, transform .2s ease; }
+  nav a.active { background: #dcecff; box-shadow: inset 0 0 0 1px #bcd7ff; }
+  nav a.active i { transform: translateY(-1px); }
+}
