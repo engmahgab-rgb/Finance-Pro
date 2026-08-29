@@ -20,6 +20,7 @@ nav a.active, nav a:hover { background: var(--color-primary-soft); color: var(--
 .hero-profile { overflow: hidden; align-items: center; }
 .hero-profile > div { position: relative; z-index: 1; min-width: 0; }
 .hero-profile h2 { margin-block: 0 5px; font-size: 24px; }
+.profile-name { display: block; margin-block: 0 6px; color: rgb(255 255 255 / 78%); font-size: 13px; font-weight: 700; }
 .hero-profile > div > b { display: block; margin-block-end: 4px; font-size: clamp(30px, 4vw, 38px); letter-spacing: -.05em; }
 .bubble { background: var(--color-primary-soft); color: var(--color-primary); }
 .positive { color: var(--color-success); }

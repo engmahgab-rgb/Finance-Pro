@@ -6,6 +6,7 @@ const recurring: Recurring = { id: 'rent', name: 'Rent', kind: 'expense', amount
 
 describe('recurring schedule', () => {
   it('advances a monthly payment date', () => expect(nextRecurringDate(recurring)).toBe('2026-03-03'));
+  it('advances a custom six-month payment date', () => expect(nextRecurringDate({ ...recurring, cadence: 'months_6', nextDate: '2026-01-15' })).toBe('2026-07-15'));
   it('tracks installments and marks the final payment inactive', () => expect(applyRecurringPayment({ ...recurring, paidInstallments: 2 }, '2026-03-31')).toMatchObject({ paidInstallments: 3, active: false }));
   it('records skipped occurrences', () => expect(skipRecurringOccurrence(recurring)).toMatchObject({ skippedDates: ['2026-01-31'] }));
 });
