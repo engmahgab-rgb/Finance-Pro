@@ -15,6 +15,9 @@ nav a.active, nav a:hover { background: var(--blue-soft); color: var(--green); }
 .backup-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 .backup-actions label { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
 .backup-note { margin-top: 26px !important; padding: 14px; border-radius: 10px; background: #edf4ff; color: #285588 !important; font-size: 13px; }
+.row-edit { margin-left: 8px; padding: 7px 9px; border-radius: 8px; background: #edf4ff; color: #1769e0; font-weight: 700; font-size: 12px; }
+.account-edit { width: 100%; margin-top: 18px; }
+.form-note { margin: -3px 0 2px; color: var(--muted); font-size: 12px; line-height: 1.45; }
 @media (max-width: 600px) {
   main { padding-bottom: calc(94px + env(safe-area-inset-bottom)); }
   aside { height: calc(78px + env(safe-area-inset-bottom)); background: color-mix(in srgb, var(--surface) 94%, #eaf2ff); border-top: 1px solid #d6e6ff; box-shadow: 0 -10px 30px #1769e01a; }
