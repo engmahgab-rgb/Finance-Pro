@@ -5,6 +5,8 @@ export function nextRecurringDate(item: Recurring, from = item.nextDate): string
   if (item.cadence === 'weekly') date.setDate(date.getDate() + 7);
   if (item.cadence === 'monthly') date.setMonth(date.getMonth() + 1);
   if (item.cadence === 'yearly') date.setFullYear(date.getFullYear() + 1);
+  const customMonths = /^months_(\d+)$/.exec(item.cadence);
+  if (customMonths) date.setMonth(date.getMonth() + Number(customMonths[1]));
   return date.toISOString().slice(0, 10);
 }
 
