@@ -15,4 +15,7 @@ aside { height: 100dvh; }
   .primary, .secondary { min-height: 44px; }
   .modal { padding: 20px; }
   .modal input, .modal select { min-height: 44px; font-size: 16px; }
+  aside nav { display: flex; justify-content: flex-start; gap: 4px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  aside nav::-webkit-scrollbar { display: none; }
+  aside nav a { flex: 0 0 52px; }
 }
