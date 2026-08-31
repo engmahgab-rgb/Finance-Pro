@@ -13,10 +13,13 @@ export function accountBalanceFromLedger(account: Account, transactions: Transac
     if (account.type === 'credit') {
       if (isSource && (transaction.kind === 'credit_purchase' || transaction.kind === 'expense')) return balance + transaction.amount;
       if (isDestination && (transaction.kind === 'credit_payment' || transaction.kind === 'transfer')) return Math.max(0, balance - transaction.amount);
+      if (isSource && transaction.kind === 'balance_adjustment_in') return balance + transaction.amount;
+      if (isSource && transaction.kind === 'balance_adjustment_out') return Math.max(0, balance - transaction.amount);
       return balance;
     }
     if (isDestination) return balance + transaction.amount;
-    if (transaction.kind === 'income' || transaction.kind === 'refund' || transaction.kind === 'loan_received') return balance + transaction.amount;
+    if (transaction.kind === 'income' || transaction.kind === 'refund' || transaction.kind === 'loan_received' || transaction.kind === 'balance_adjustment_in') return balance + transaction.amount;
+    if (transaction.kind === 'balance_adjustment_out') return balance - transaction.amount;
     return balance - transaction.amount;
   }, account.openingBalance);
 }

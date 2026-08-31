@@ -31,4 +31,21 @@ describe('financial ledger', () => {
     const transactions = [tx({ kind: 'income', amount: 4000 }), tx({ kind: 'expense', amount: 800 }), tx({ kind: 'refund', amount: 100 })];
     expect(summarizeLedger([bank], transactions)).toMatchObject({ income: 4100, expenses: 800, cashFlow: 3300 });
   });
+  it('adds money to a bank or cash account as income', () => {
+    const cash: Account = { ...bank, id: 'cash', type: 'cash', openingBalance: 0 };
+    expect(accountBalanceFromLedger(bank, [tx({ kind: 'income', amount: 1000 })])).toBe(2000);
+    expect(accountBalanceFromLedger(cash, [tx({ accountId: cash.id, kind: 'income', amount: 500 })])).toBe(500);
+  });
+  it('adjusts an account up or down without changing ordinary reports', () => {
+    const up = tx({ kind: 'balance_adjustment_in', amount: 250 });
+    const down = tx({ kind: 'balance_adjustment_out', amount: 200 });
+    expect(accountBalanceFromLedger(bank, [up])).toBe(1250);
+    expect(accountBalanceFromLedger(bank, [down])).toBe(800);
+    expect(summarizeLedger([bank], [up, down])).toMatchObject({ income: 0, expenses: 0, cashFlow: 0, netWorth: 1050 });
+  });
+  it('does not change a balance when only account metadata is edited', () => {
+    const renamedBank = { ...bank, name: 'Renamed bank', color: '#0000ff' };
+    const transaction = tx({ kind: 'income', amount: 300 });
+    expect(accountBalanceFromLedger(renamedBank, [transaction])).toBe(accountBalanceFromLedger(bank, [transaction]));
+  });
 });

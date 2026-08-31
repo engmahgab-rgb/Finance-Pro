@@ -1,5 +1,5 @@
 export type AccountType = 'cash' | 'bank' | 'wallet' | 'savings' | 'debit' | 'credit';
-export type TransactionKind = 'income' | 'expense' | 'transfer' | 'credit_purchase' | 'credit_payment' | 'refund' | 'loan_given' | 'loan_received' | 'loan_repayment';
+export type TransactionKind = 'income' | 'expense' | 'transfer' | 'credit_purchase' | 'credit_payment' | 'refund' | 'loan_given' | 'loan_received' | 'loan_repayment' | 'balance_adjustment_in' | 'balance_adjustment_out';
 export type TransactionStatus = 'posted' | 'void';
 export type TranslationMap = Partial<Record<'en' | 'ar', string>>;
 export interface Account { id: string; name: string; translations?: TranslationMap; type: AccountType; openingBalance: number; creditLimit?: number; statementDay?: number; paymentDueDay?: number; color: string; createdAt: string; archived?: boolean; }
